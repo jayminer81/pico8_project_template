@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# Parses a file and types it to screen, if it encounters the word "include"
+# followed by a filename at the beginning of a line that entire file printed
+# instead of the include-line.
+
 import sys
 import os.path
 
@@ -16,7 +20,11 @@ for line in sourceFile:
         print line,
     else:
         lineInclude = lineStripped.split()
+        if not os.path.exists(lineInclude[1]):
+                    sys.exit("Included file " + lineInclude[1] + " not found.")
         includeFile = file(lineInclude[1])
+        if not os.path.exists(lineInclude[1]):
+            sys.exit("Included file " + lineInclude[1] + " not found.")
         for incLine in includeFile:
             print incLine,
         
