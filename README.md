@@ -8,4 +8,6 @@ When you 'make' your project the graphics and sounds are taken from the file gfx
 
 To include another source-file from the main-source file just type "include *filename*" and if the file exists it will be concatinated into the source, see source.lua for an example.
 
+The parse.py-script can optimize the output to remove comments and indentation to save characters. Just add the argument --optimize after the filename. To get this behaviour when you make the project, edit the Makefile to say: PARSEOPTIONS=--optimize
+
 For now it's not possible to include files from within a file that is getting included, perhaps this will be added in the future.
