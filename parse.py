@@ -6,19 +6,25 @@
 
 import sys
 import os.path
+import optparse
 
-optimize = False
-if len(sys.argv) > 2:
-    if sys.argv[2]=="--optimize":
-        optimize = True
+parser = optparse.OptionParser(
+    usage = "Usage: %prog [options] filename",
+    description = "Parse a source file and include other files.",
+    option_list = [
+        optparse.make_option("-o", "--optimize", dest = "optimize", action = "store_true", default = False, help = "Removes comments and indentation")
+    ])
 
-if len(sys.argv) != 2 and not optimize:
-    sys.exit("Usage: " + os.path.basename(sys.argv[0]) + " <sourcefile> [-optimize]")
+options, args = parser.parse_args()
+if 1 != len(args):
+    parser.error("Only one filename is supported.")
+    print "options: " + str(options)
+    print "args: " + str(args)
 
-if not os.path.exists(sys.argv[1]):
-    sys.exit("File " + sys.argv[1] + " not found.")
-
-sourceFile = file(sys.argv[1])
+if not os.path.exists(args[0]):
+    sys.exit("Error: Filename " + args[0] + " not found.")
+                            
+sourceFile = file(args[0])
 for line in sourceFile:
     lineStripped = line.strip()
     if lineStripped.startswith("include"):
@@ -30,18 +36,18 @@ for line in sourceFile:
             sys.exit("Included file " + lineInclude[1] + " not found.")
         for incLine in includeFile:
             incStripped = incLine.strip()
-            if incStripped.startswith("--") and optimize:
+            if incStripped.startswith("--") and options.optimize:
                 pass
             else:
-                if optimize:
+                if options.optimize:
                     if not incStripped=="":
                         print incStripped
                 else:
                     print incLine,
-    elif lineStripped.startswith("--") and optimize:
+    elif lineStripped.startswith("--") and options.optimize:
         pass
     else:
-        if optimize:
+        if options.optimize:
             if not lineStripped=="":
                 print lineStripped
         else:
